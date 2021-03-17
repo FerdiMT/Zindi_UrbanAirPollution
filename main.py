@@ -9,7 +9,7 @@ nas_test = pd.DataFrame(test.isnull().sum())
 nas_train = pd.DataFrame(train.isnull().sum())
 # Data wrangling
 # We remove the columns that have more than 300 NAS in the TEST SET
-test.dropna(thresh=len(test) - 300, axis=1, inplace=True)
+test.dropna(thresh=len(test) - 5000, axis=1, inplace=True)
 # We get the test columns for the train features
 label_train = train['target']
 features_train = train[test.columns]
