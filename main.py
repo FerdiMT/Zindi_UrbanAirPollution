@@ -4,27 +4,23 @@ from xgboost import XGBRegressor
 train = pd.read_csv('Data/Train.csv')
 test = pd.read_csv('Data/Test.csv')
 
+# Check NAS
+nas_test = pd.DataFrame(test.isnull().sum())
+nas_train = pd.DataFrame(train.isnull().sum())
 # Data wrangling
-# As a first test, we simply remove all the columns that have some NAS in them.
-train.dropna(axis=1, how='any', inplace=True)
-test.dropna(axis=1, how='any', inplace=True)
+# We remove the columns that have more than 300 NAS in the TEST SET
+test.dropna(thresh=len(test) - 300, axis=1, inplace=True)
+# We get the test columns for the train features
+label_train = train['target']
+features_train = train[test.columns]
 
 # We remove the additional columns that appear in train but not in test and separate label and features
-label_train = train['target']
-features_train = train[['precipitable_water_entire_atmosphere',
-                        'relative_humidity_2m_above_ground',
-                        'specific_humidity_2m_above_ground', 'temperature_2m_above_ground',
-                        'u_component_of_wind_10m_above_ground',
-                        'v_component_of_wind_10m_above_ground']]
-features_test = test[['precipitable_water_entire_atmosphere',
-                        'relative_humidity_2m_above_ground',
-                        'specific_humidity_2m_above_ground', 'temperature_2m_above_ground',
-                        'u_component_of_wind_10m_above_ground',
-                        'v_component_of_wind_10m_above_ground']]
+features_train = features_train.iloc[:,3:]
+features_test = test.iloc[:,3:]
 
 # Train model on all the training data. TODO: Cross validate, create train/validation split, etc...
 model = XGBRegressor()
-print('cava')
+
 model.fit(features_train, label_train)
 
 # Make predictions for test data
