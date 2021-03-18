@@ -17,10 +17,12 @@ features_train = train[test.columns]
 # Create day of the week feature as dummy columns
 features_train['Date'] = pd.to_datetime(features_train['Date'])
 features_train['day_of_week'] = features_train['Date'].dt.day_name()
-features_train = pd.get_dummies(features_train, columns=['day_of_week'])
+features_train['month'] = pd.DatetimeIndex(features_train['Date']).month
+features_train = pd.get_dummies(features_train, columns=['day_of_week', 'month'])
 test['Date'] = pd.to_datetime(test['Date'])
 test['day_of_week'] = test['Date'].dt.day_name()
-test = pd.get_dummies(test, columns=['day_of_week'])
+test['month'] = pd.DatetimeIndex(test['Date']).month
+test = pd.get_dummies(test, columns=['day_of_week', 'month'])
 
 
 # We remove the additional columns that appear in train but not in test and separate label and features
